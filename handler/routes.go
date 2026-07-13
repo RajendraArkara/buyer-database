@@ -7,4 +7,5 @@ import (
 
 func Routes(server *gin.Engine) {
 	server.GET("/buyer", buyer.GetAllBuyer)
+	server.POST("/create-buyer", buyer.CreateBuyer)
 }
