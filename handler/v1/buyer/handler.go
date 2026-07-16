@@ -2,6 +2,7 @@ package buyer
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/RajendraArkara/buyer-database/internal/entity"
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 func GetAllBuyer(ctx *gin.Context) {
 	buyer, err := entity.GetAllBuyer()
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
+		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Could not fetch data",
 		})
 		return
@@ -46,4 +47,26 @@ func CreateBuyer(ctx *gin.Context) {
 		"message": "buyer created!",
 		"buyer":   buyer,
 	})
+}
+
+func GetByID(ctx *gin.Context) {
+	buyerid, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "Could not parse buyer id!",
+		})
+		return
+	}
+
+	buyer, err := entity.GetByID(buyerid)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Could not fetch the data",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, buyer)
 }
