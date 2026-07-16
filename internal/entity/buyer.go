@@ -83,3 +83,32 @@ func GetAllBuyer() ([]Buyer, error) {
 
 	return buyers, nil
 }
+
+func GetByID(id int64) (*Buyer, error) {
+	query := `
+		SELECT * FROM buyers
+		WHERE buyer_id = $1
+	`
+
+	row := db.DB.QueryRow(query, id)
+
+	var buyer Buyer
+
+	err := row.Scan(
+		&buyer.BuyerID,
+		&buyer.NamaPerusahaan,
+		&buyer.WebsitePerusahaan,
+		&buyer.NomorTelepon,
+		&buyer.EmailPerusahaan,
+		&buyer.Negara,
+		&buyer.DateTime,
+		&buyer.UserID,
+		&buyer.KomoditasPerusahaan,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &buyer, nil
+}
