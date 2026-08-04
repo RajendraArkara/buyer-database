@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/RajendraArkara/buyer-database/infrastructure/db"
 	"github.com/RajendraArkara/buyer-database/internal/entity"
 	"github.com/RajendraArkara/buyer-database/internal/repository"
 )
@@ -23,12 +22,12 @@ func (r *PostgresRepository) Create(ctx context.Context, data *entity.Buyer) (in
 	query := `
 		INSERT INTO buyers (company_name, company_website, company_telephone, company_email, country, commodity, user_id)
 		VALUES ($1, $2 , $3, $4, $5, $6, $7)
-		RETURNING buyer_id
+		RETURNING buyer_id, date_time
 	`
 
 	var id int64
 
-	err := db.DB.QueryRow(query,
+	err := r.db.QueryRow(query,
 		data.NamaPerusahaan,
 		data.WebsitePerusahaan,
 		data.NomorTelepon,
@@ -36,7 +35,7 @@ func (r *PostgresRepository) Create(ctx context.Context, data *entity.Buyer) (in
 		data.Negara,
 		data.KomoditasPerusahaan,
 		data.UserID,
-	).Scan(&id)
+	).Scan(&id, &data.DateTime)
 
 	if err != nil {
 		return 0, err
@@ -49,7 +48,7 @@ func (r *PostgresRepository) FetchAll(ctx context.Context) ([]entity.Buyer, erro
 	query := `
 		SELECT * FROM buyers
 	`
-	rows, err := db.DB.Query(query)
+	rows, err := r.db.Query(query)
 
 	if err != nil {
 		return nil, err
@@ -90,7 +89,7 @@ func (r *PostgresRepository) FindByID(ctx context.Context, id int64) (*entity.Bu
 		WHERE buyer_id = $1
 	`
 
-	row := db.DB.QueryRow(query, id)
+	row := r.db.QueryRow(query, id)
 
 	var buyer entity.Buyer
 

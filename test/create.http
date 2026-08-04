@@ -2,7 +2,7 @@ POST  http://localhost:8080/create-buyer
 content-Type: application/json
 
 {
-    "NamaPerusahaan": "tesabc2",
+    "nama_perusahaan": "tesabc2",
 	"WebsitePerusahaan": "tesabc2",  
 	"NomorTelepon": "+23",       
 	"Negara": "tesabc2",             

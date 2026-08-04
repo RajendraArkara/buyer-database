@@ -74,8 +74,8 @@ func (h *BuyerHandler) CreateBuyer(ctx *gin.Context) {
 func (h *BuyerHandler) GetByID(ctx *gin.Context) {
 	buyerid, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "Could not parse buyer id!",
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "Buyer not found!",
 		})
 		return
 	}
