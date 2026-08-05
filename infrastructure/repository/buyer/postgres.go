@@ -111,3 +111,33 @@ func (r *PostgresRepository) FindByID(ctx context.Context, id int64) (*entity.Bu
 
 	return &buyer, nil
 }
+
+func (r *PostgresRepository) UpdateBuyer(ctx context.Context, id int64, data *entity.Buyer) error {
+	query := `
+		UPDATE buyers
+		SET company_name = $1, company_website = $2, company_telephone = $3, company_email = $4, country = $5, commodity = $6
+		WHERE buyer_id = $7
+	`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(
+		&data.NamaPerusahaan,
+		&data.WebsitePerusahaan,
+		&data.NomorTelepon,
+		&data.EmailPerusahaan,
+		&data.Negara,
+		&data.KomoditasPerusahaan,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
