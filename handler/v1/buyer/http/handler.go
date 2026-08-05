@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -38,11 +37,34 @@ func (h *BuyerHandler) GetAllBuyer(ctx *gin.Context) {
 	})
 }
 
+func (h *BuyerHandler) GetByID(ctx *gin.Context) {
+	buyerid, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "Buyer not found!",
+		})
+		return
+	}
+
+	buyer, err := h.Uc.FindByID(ctx, buyerid)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Could not fetch the data",
+		})
+		return
+	}
+
+	resp := BuyerObject{}.ParseFromEntity(*buyer)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": resp,
+	})
+}
+
 func (h *BuyerHandler) CreateBuyer(ctx *gin.Context) {
 	var req CreateBuyerRequest
 
 	err := ctx.ShouldBindJSON(&req)
-	fmt.Println(req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "could not parse the data!",
@@ -71,26 +93,39 @@ func (h *BuyerHandler) CreateBuyer(ctx *gin.Context) {
 	})
 }
 
-func (h *BuyerHandler) GetByID(ctx *gin.Context) {
-	buyerid, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+func (h *BuyerHandler) UpdateBuyer(ctx *gin.Context) {
+	var req CreateBuyerRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "Could not fetch the data!",
+		})
+		return
+	}
+
+	buyerID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
-			"message": "Buyer not found!",
+			"message": "BuyerID not found!",
 		})
 		return
 	}
 
-	buyer, err := h.Uc.FindByID(ctx, buyerid)
+	buyer := req.ToEntity()
+	buyer.UserID = 1
+
+	err = h.Uc.UpdateBuyer(ctx.Request.Context(), buyerID, buyer)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Could not fetch the data",
+			"message": "Could not fetch the data!",
 		})
 		return
 	}
 
-	resp := BuyerObject{}.ParseFromEntity(*buyer)
+	parse := BuyerObject{}.ParseFromEntity(*buyer)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": resp,
+		"success": true,
+		"Detail":  parse,
 	})
 }

@@ -10,4 +10,5 @@ type BuyerRepository interface {
 	Create(ctx context.Context, data *entity.Buyer) (int64, error)
 	FetchAll(ctx context.Context) ([]entity.Buyer, error)
 	FindByID(ctx context.Context, id int64) (*entity.Buyer, error)
+	UpdateBuyer(ctx context.Context, id int64, data *entity.Buyer) error
 }

@@ -9,4 +9,5 @@ func Routes(server *gin.Engine, h *buyerhttp.BuyerHandler) {
 	server.GET("/buyer", h.GetAllBuyer)
 	server.POST("/create-buyer", h.CreateBuyer)
 	server.GET("/buyer/:id", h.GetByID)
+	server.PATCH("/buyer/update/:id", h.UpdateBuyer)
 }
