@@ -10,4 +10,5 @@ func Routes(server *gin.Engine, h *buyerhttp.BuyerHandler) {
 	server.POST("/create-buyer", h.CreateBuyer)
 	server.GET("/buyer/:id", h.GetByID)
 	server.PATCH("/buyer/update/:id", h.UpdateBuyer)
+	server.DELETE("/buyer/delete/:id", h.DeleteBuyer)
 }

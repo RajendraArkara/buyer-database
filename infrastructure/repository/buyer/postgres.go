@@ -141,3 +141,24 @@ func (r *PostgresRepository) UpdateBuyer(ctx context.Context, id int64, data *en
 
 	return nil
 }
+
+func (r *PostgresRepository) DeleteBuyer(ctx context.Context, id int64) error {
+	query := `
+		DELETE FROM buyers
+		WHERE buyer_id = $1
+	`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
