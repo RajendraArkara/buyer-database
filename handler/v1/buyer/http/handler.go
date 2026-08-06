@@ -129,3 +129,25 @@ func (h *BuyerHandler) UpdateBuyer(ctx *gin.Context) {
 		"Detail":  parse,
 	})
 }
+
+func (h *BuyerHandler) DeleteBuyer(ctx *gin.Context) {
+	id, err := strconv.ParseInt("id", 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "ID not found!",
+		})
+		return
+	}
+
+	err = h.Uc.DeleteBuyer(ctx.Request.Context(), id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Could not fetch the data!",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}

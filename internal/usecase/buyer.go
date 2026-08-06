@@ -12,6 +12,7 @@ type IBuyerUseCase interface {
 	FetchAll(ctx context.Context) ([]entity.Buyer, error)
 	FindByID(ctx context.Context, id int64) (*entity.Buyer, error)
 	UpdateBuyer(ctx context.Context, id int64, data *entity.Buyer) error
+	DeleteBuyer(ctx context.Context, id int64) error
 }
 
 type BuyerUsecase struct {
@@ -60,5 +61,14 @@ func (uc *BuyerUsecase) UpdateBuyer(ctx context.Context, id int64, data *entity.
 		return err
 	}
 
-	return err
+	return nil
+}
+
+func (uc *BuyerUsecase) DeleteBuyer(ctx context.Context, id int64) error {
+	err := uc.Repo.DeleteBuyer(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
