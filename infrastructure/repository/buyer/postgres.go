@@ -47,6 +47,7 @@ func (r *PostgresRepository) Create(ctx context.Context, data *entity.Buyer) (in
 func (r *PostgresRepository) FetchAll(ctx context.Context) ([]entity.Buyer, error) {
 	query := `
 		SELECT * FROM buyers
+		ORDER BY buyer_id
 	`
 	rows, err := r.db.Query(query)
 
