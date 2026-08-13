@@ -20,4 +20,6 @@ func RoutesUser(server *gin.Engine, h *userhttp.UserHandler) {
 	//user
 	server.POST("/user/create-user", h.SignUp)
 	server.POST("/user/login", h.Login)
+	server.PATCH("/user/forgot-password", h.ForgotPassword)
+	server.GET("/user/get-all", h.GetAll)
 }

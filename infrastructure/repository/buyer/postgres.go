@@ -50,7 +50,6 @@ func (r *PostgresRepository) FetchAll(ctx context.Context) ([]entity.Buyer, erro
 		ORDER BY buyer_id
 	`
 	rows, err := r.db.Query(query)
-
 	if err != nil {
 		return nil, err
 	}

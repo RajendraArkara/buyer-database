@@ -12,6 +12,8 @@ import (
 type IUserUseCase interface {
 	SignUp(ctx context.Context, data *entity.User) (int64, error)
 	Login(ctx context.Context, email, pass string) (string, error)
+	ForgotPassword(ctx context.Context, email, pass string) error
+	GetAll(ctx context.Context) ([]entity.User, error)
 }
 
 type UserUseCase struct {
@@ -51,4 +53,29 @@ func (uc *UserUseCase) Login(ctx context.Context, email, pass string) (string, e
 	}
 
 	return utils.GenerateToken(user.Email, user.UserID)
+}
+
+func (uc *UserUseCase) ForgotPassword(ctx context.Context, email, pass string) error {
+	user, err := uc.Repo.FindByEmail(ctx, email)
+	if err != nil {
+		return errors.New("Account not found!")
+	}
+
+	hashpass, err := utils.HashPassword(pass)
+	if err != nil {
+		return err
+	}
+
+	user.Password = hashpass
+
+	return uc.Repo.UpdatePassword(ctx, user.UserID, user)
+}
+
+func (uc *UserUseCase) GetAll(ctx context.Context) ([]entity.User, error) {
+	data, err := uc.Repo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
