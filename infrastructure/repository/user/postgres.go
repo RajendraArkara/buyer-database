@@ -18,6 +18,42 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 	}
 }
 
+func (r *PostgresRepository) GetAll(ctx context.Context) ([]entity.User, error) {
+	query := `
+		SELECT email, role, user_name, user_id, created_at, updated_at
+		FROM users
+		ORDER BY user_id
+	`
+
+	row, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer row.Close()
+
+	var users []entity.User
+
+	for row.Next() {
+		var user entity.User
+		err := row.Scan(
+			&user.Email,
+			&user.Role,
+			&user.UserName,
+			&user.UserID,
+			&user.CreatedAt,
+			&user.UpdateAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
 func (r *PostgresRepository) SignUp(ctx context.Context, data *entity.User) (int64, error) {
 	query := `
 		INSERT INTO users (user_name, email, password, role)
@@ -54,4 +90,29 @@ func (r *PostgresRepository) FindByEmail(ctx context.Context, email string) (*en
 	}
 
 	return &user, nil
+}
+
+func (r *PostgresRepository) UpdatePassword(ctx context.Context, id int64, data *entity.User) error {
+	query := `
+		UPDATE users
+		SET password = $1
+		WHERE user_id = $2
+	`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(
+		&data.Password,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
