@@ -4,13 +4,13 @@ import "github.com/RajendraArkara/buyer-database/internal/entity"
 
 type CreateUserRequest struct {
 	Username string `json:"user_name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 	Role     string `json:"role" binding:"required"`
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 

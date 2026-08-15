@@ -5,9 +5,9 @@ import "github.com/RajendraArkara/buyer-database/internal/entity"
 type CreateBuyerRequest struct {
 	NamaPerusahaan      string `json:"nama_perusahaan" binding:"required"`
 	WebsitePerusahaan   string `json:"website_perusahaan" binding:"required"`
-	NomorTelepon        string `json:"nomor_telepon" binding:"required"`
+	NomorTelepon        string `json:"nomor_telepon" binding:"required,startswith=+"`
 	Negara              string `json:"negara" binding:"required"`
-	EmailPerusahaan     string `json:"email_perusahaan" binding:"required"`
+	EmailPerusahaan     string `json:"email_perusahaan" binding:"required,email"`
 	KomoditasPerusahaan string `json:"komoditas_perusahaan" binding:"required"`
 }
 
