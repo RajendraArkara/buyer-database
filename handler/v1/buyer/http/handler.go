@@ -86,7 +86,9 @@ func (h *BuyerHandler) CreateBuyer(ctx *gin.Context) {
 	}
 
 	buyer := req.ToEntity()
-	buyer.UserID = 1
+
+	userId, _ := ctx.Get("user_id")
+	buyer.UserID = userId.(int64)
 
 	id, err := h.Uc.Create(ctx.Request.Context(), buyer)
 	if err != nil {
