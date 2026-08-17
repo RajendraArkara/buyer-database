@@ -129,7 +129,9 @@ func (h *BuyerHandler) UpdateBuyer(ctx *gin.Context) {
 	}
 
 	buyer := req.ToEntity()
-	buyer.UserID = 1
+
+	userId, _ := ctx.Get("user_id")
+	buyer.UserID = userId.(int64)
 
 	err = h.Uc.UpdateBuyer(ctx.Request.Context(), buyerID, buyer)
 	if err != nil {
